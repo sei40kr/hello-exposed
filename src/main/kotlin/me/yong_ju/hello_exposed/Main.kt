@@ -93,6 +93,24 @@ object StarWarsFilmActors : Table() {
     override val primaryKey = PrimaryKey(starWarsFilm, actor, name = "OK_StarWarsFilmActors_swf_act")
 }
 
+// Parent-Child reference
+object NodeTable : IntIdTable() {
+    val name = varchar("name", 50)
+}
+
+object NodeToNodes : Table() {
+    val parent = reference("parent_node_id", NodeTable)
+    val child = reference("child_user_id", NodeTable)
+}
+
+class Node(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Node>(NodeTable)
+
+    var name by NodeTable.name
+    var parents by Node.via(NodeToNodes.child, NodeToNodes.parent)
+    var children by Node.via(NodeToNodes.parent, NodeToNodes.child)
+}
+
 @Suppress("UnusedMainParameter", "UNUSED_VARIABLE")
 fun main(args: Array<String>) {
     // an example connection to H2 DB
