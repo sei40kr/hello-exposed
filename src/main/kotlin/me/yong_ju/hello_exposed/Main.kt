@@ -142,21 +142,21 @@ fun main(args: Array<String>) {
 
         run {
             StarWarsFilms.select { StarWarsFilms.sequelId eq 8 }
-                    .forEach { println(it[StarWarsFilms.name]) }
+                .forEach { println(it[StarWarsFilms.name]) }
         }
 
         run {
             val filmAndDirector = StarWarsFilms.slice(StarWarsFilms.name, StarWarsFilms.director)
-                    .selectAll()
-                    .map { it[StarWarsFilms.name] to it[StarWarsFilms.director] }
+                .selectAll()
+                .map { it[StarWarsFilms.name] to it[StarWarsFilms.director] }
 
         }
 
         run {
             val directors = StarWarsFilms.slice(StarWarsFilms.director)
-                    .select { StarWarsFilms.sequelId less 5 }
-                    .withDistinct()
-                    .map { it[StarWarsFilms.director] }
+                .select { StarWarsFilms.sequelId less 5 }
+                .withDistinct()
+                .map { it[StarWarsFilms.director] }
         }
 
         // Update
@@ -209,8 +209,8 @@ fun main(args: Array<String>) {
         // - average
         run {
             StarWarsFilms.slice(StarWarsFilms.sequelId.count(), StarWarsFilms.director)
-                    .selectAll()
-                    .groupBy(StarWarsFilms.director)
+                .selectAll()
+                .groupBy(StarWarsFilms.director)
         }
 
 
@@ -224,10 +224,13 @@ fun main(args: Array<String>) {
 //        }
 
         run {
-            Players.join(StarWarsFilms, JoinType.INNER, additionalConstraint = { StarWarsFilms.sequelId eq Players.sequelId })
-                    .slice(Players.name.count(), StarWarsFilms.name)
-                    .selectAll()
-                    .groupBy(StarWarsFilms.name)
+            Players.join(
+                StarWarsFilms,
+                JoinType.INNER,
+                additionalConstraint = { StarWarsFilms.sequelId eq Players.sequelId })
+                .slice(Players.name.count(), StarWarsFilms.name)
+                .selectAll()
+                .groupBy(StarWarsFilms.name)
         }
 
 
@@ -241,7 +244,8 @@ fun main(args: Array<String>) {
 
         run {
             val sequelTable = StarWarsFilms.alias("sql")
-            val originalAndSequelNames = StarWarsFilms.innerJoin(sequelTable, { sequelId }, { sequelTable[StarWarsFilms.id] })
+            val originalAndSequelNames =
+                StarWarsFilms.innerJoin(sequelTable, { sequelId }, { sequelTable[StarWarsFilms.id] })
                     .slice(StarWarsFilms.name, sequelTable[StarWarsFilms.name])
                     .selectAll()
                     .map { it[StarWarsFilms.name] to it[sequelTable[StarWarsFilms.name]] }
